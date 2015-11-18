@@ -4,7 +4,7 @@ import os
 if os.environ.get('USER','') == 'vagrant':
     del os.link
 setup(name='awsprofile',
-      version='0.3',
+      version='0.4',
       description='Easy way to swap aws iam profiles',
       url='https://github.com/girishpandit88/awsprofile',
       author='girishpandit',
@@ -14,4 +14,4 @@ setup(name='awsprofile',
       zip_safe=False,
       entry_points = {
         "console_scripts": ['awsprofile = awsprofile:main']
-        },)
+        })

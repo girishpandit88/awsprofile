@@ -10,6 +10,7 @@ config = ConfigParser.RawConfigParser()
 # config.read(['credential', os.path.expanduser('~/.aws/credentials')])
 def opt_move(configuration, section1, section2, option):
 	try:
+		# print 'switching', section2, 'to', section1
 		configuration.set(section2, option, configuration.get(section1, option))
 	except ConfigParser.NoSectionError:
 		# Create non-existent section
@@ -18,7 +19,12 @@ def opt_move(configuration, section1, section2, option):
 
 
 def use_profile(profile_name):
-	config.read(os.path.expanduser('~/.aws/credentials'))
+	try:
+		with open(os.path.expanduser('~/.aws/credentials'), 'r') as f:
+			config.readfp(f)
+	except IOError as e:
+		raise Exception('I/O error({0}): {1}. Run aws configure first!'.format(e.errno, e.strerror))
+	# config.read(os.path.expanduser('~/.aws/credentials'))
 	try:
 		config.get(profile_name,aws_access_key_id)
 	except ConfigParser.NoSectionError:
@@ -27,30 +33,33 @@ def use_profile(profile_name):
 		else:
 			raise Exception('No such config')
 	if profile_name == '' or profile_name == 'default':
-		print('no profile name, trying to switch back to default profile...')
+		print 'no profile name provided, trying to switch back to default profile...'
 		if config.has_section('tmp'):
 			opt_move(config, 'tmp', 'default', aws_access_key_id)
 			opt_move(config, 'tmp', 'default', aws_secret_access_key)
 			config.remove_section('tmp')
 			with open(os.path.expanduser('~/.aws/credentials'), 'wb') as configfile:
 				config.write(configfile)
-				print('switched to default profile')
+				print 'switched to default profile'
 				sys.exit()
 
 	elif profile_name is not None and profile_name not in 'default':
 		if config.has_section('tmp'):
-			print('Credential file was already swapped once, please run aws_profile once without any argument to continue')
-			sys.exit()
-		print('Switching default profile to ', profile_name)
-		def_access_key = config.get('default', aws_access_key_id)
-		def_secret_key = config.get('default', aws_secret_access_key)
-		opt_move(config, profile_name, 'default', aws_access_key_id)
-		opt_move(config, profile_name, 'default', aws_secret_access_key)
-		config.add_section('tmp')
-		config.set('tmp', aws_access_key_id, def_access_key)
-		config.set('tmp', aws_secret_access_key, def_secret_key)
+			print 'Switching default profile to', profile_name
+			opt_move(config, profile_name, 'default', aws_access_key_id)
+			opt_move(config, profile_name, 'default', aws_secret_access_key)
+		else:
+			print 'Switching default profile to ', profile_name
+			def_access_key = config.get('default', aws_access_key_id)
+			def_secret_key = config.get('default', aws_secret_access_key)
+			opt_move(config, profile_name, 'default', aws_access_key_id)
+			opt_move(config, profile_name, 'default', aws_secret_access_key)
+			config.add_section('tmp')
+			config.set('tmp', aws_access_key_id, def_access_key)
+			config.set('tmp', aws_secret_access_key, def_secret_key)
 		with open(os.path.expanduser('~/.aws/credentials'), 'wb') as configfile:
 			config.write(configfile)
+			print 'default now points to', profile_name, 'profile'
 
 
 def main():
@@ -62,6 +71,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
-
-
