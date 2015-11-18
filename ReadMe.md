@@ -6,7 +6,7 @@ This small little python package allows you to quickly switch between different 
 #####Installation
 Installing from source:
 ```
-git checkout git@github.com:girishpandit88/awsprofile.git
+git clone git@github.com:girishpandit88/awsprofile.git
 cd awsprofile
 python setup.py install
 ```
