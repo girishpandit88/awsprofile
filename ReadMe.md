@@ -17,7 +17,7 @@ Installing via pip:
 Assuming your credentials are stored in ```~/.aws/credentials``` folder.
 ```awsprofile <profile_to_be_used_as_default>```
 
-then you can run any aws command with ```--profile <profilename>``` 
+then you can run any ```aws``` command without the ```--profile <profilename>``` passed as argument to ```aws``` command
 
 Once you are done you can switch back to using default aws profile by running ```awsprofile```
 
