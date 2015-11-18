@@ -21,7 +21,7 @@ then you can run any ```aws``` command without the ```--profile <profilename>```
 
 Once you are done you can switch back to using default aws profile by running ```awsprofile```
 
-Please Note this package allows you to switch between default and any other iam profile. Once you switch between default and iam profile, you have to run awsprofile with no arguments before you can switch with any other profile. 
+Please note this package allows you to switch between default and any other iam profile. Once you switch between default and iam profile, you have to run awsprofile with no arguments before you can switch with any other profile. 
 
 #####In near future
 Ability to give custom path to the credential file.
